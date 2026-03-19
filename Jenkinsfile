@@ -2,9 +2,14 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = 'c:\\Users\\chara\\mahesh\\fsProj\\maven\\apache-maven-3.9.6'
-        PATH = "${MAVEN_HOME}\\bin;${PATH}"
+        MAVEN_HOME   = 'c:\\Users\\chara\\mahesh\\fsProj\\maven\\apache-maven-3.9.6'
+        PATH         = "${MAVEN_HOME}\\bin;${PATH}"
         SERVICES_DIR = 'c:\\Users\\chara\\mahesh\\fsProj\\lms-microservices'
+        FRONTEND_DIR = 'c:\\Users\\chara\\mahesh\\fsProj\\lms-frontend'
+    }
+
+    triggers {
+        githubPush()
     }
 
     stages {
@@ -49,6 +54,15 @@ pipeline {
             post {
                 always {
                     junit testResults: "${SERVICES_DIR}\\api-gateway\\target\\surefire-reports\\*.xml", allowEmptyResults: true
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir("${FRONTEND_DIR}") {
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
