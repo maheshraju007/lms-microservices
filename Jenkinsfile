@@ -55,7 +55,12 @@ pipeline {
 
         stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: "${SERVICES_DIR}\\**\\target\\*.jar", fingerprint: true
+                bat """
+                    copy "${SERVICES_DIR}\\auth-service\\target\\auth-service-1.0.0.jar" .
+                    copy "${SERVICES_DIR}\\course-service\\target\\course-service-1.0.0.jar" .
+                    copy "${SERVICES_DIR}\\api-gateway\\target\\api-gateway-1.0.0.jar" .
+                """
+                archiveArtifacts artifacts: '*.jar', fingerprint: true
             }
         }
     }
